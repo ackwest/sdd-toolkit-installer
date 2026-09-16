@@ -25,8 +25,8 @@ Install Codex or Claude Code separately before configuring it. The installer
 does not install coding agents. Package-manager availability and enterprise
 device policies may require your administrator's assistance with GitHub CLI.
 
-Only these bootstrap scripts are public. Executables, Lifecycle, skills and
-templates are distributed through the private repository. This installer never
+The bootstrap scripts, documentation and synthetic tests are public. Executables,
+Lifecycle, skills and templates are distributed through the private repository. This installer never
 requests a GitHub token on the command line or copies it into Toolkit settings.
 
 If setup is interrupted, run `sdd-toolkit install` again. Run `sdd-toolkit doctor`
@@ -53,3 +53,24 @@ sh/bash/zsh startup file, preserving a backup of an existing file. Other shells
 receive a PATH instruction. Windows updates the user PATH. Open a new terminal
 after setup. `SDD_TOOLKIT_NO_PATH_UPDATE=1` suppresses persistent PATH changes on
 both platforms. All `SDD_TOOLKIT_*` options above also work in PowerShell.
+
+## Maintenance
+
+This repository owns the bootstrap scripts and their tests. Make installer changes
+here; do not maintain copies or export bundles from the private Toolkit repository.
+The private repository owns the CLI, self-update, setup, managed plugins and releases.
+
+Run the fixture tests with Python 3 and Go available on PATH:
+
+```text
+python scripts/test_installers.py
+```
+
+Go builds a synthetic Windows executable for the tests; users do not need Go or
+Python to install the Toolkit. The tests use temporary directories and mock GitHub,
+sign-in and setup; they do not download private content or configure a coding agent.
+CI runs the suite on Windows, macOS and Linux without repository secrets.
+
+Merge reviewed changes to `main` to publish the public script URLs. Preserve the
+private release archive names, checksum format and CLI invocation contract when
+changing either repository. No executable or Lifecycle payload belongs here.
