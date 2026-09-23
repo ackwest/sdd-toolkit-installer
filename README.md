@@ -9,7 +9,7 @@ downloading the installer again:
 | Situation | Command |
 |---|---|
 | First setup or resume interrupted setup | `sdd-toolkit install` |
-| Replace the original Reach Collective Lifecycle | `sdd-toolkit migrate` |
+| Replace the original Reach Collective plugins with registered equivalents | `sdd-toolkit migrate` |
 | Update an existing new-distribution installation | `sdd-toolkit update` |
 | Restore missing or damaged managed components | `sdd-toolkit repair` |
 | Diagnose workspace configuration or access | `sdd-toolkit doctor` from the workspace |
@@ -46,16 +46,17 @@ The bootstrap scripts, documentation and synthetic tests are public. Executables
 Lifecycle, skills and templates are distributed through the private repository. This installer never
 requests a GitHub token on the command line or copies it into Toolkit settings.
 
-## Moving from the original Lifecycle
+## Moving from the original Toolkit
 
-The original plugin is `lifecycle@reachcollective-sdd-toolkit`; the replacement is
-`lifecycle@sdd-toolkit`.
+The current catalog contains Lifecycle and Blueprint. Lifecycle also owns the reviewer, QA author,
+guardrail and UI proposal capabilities formerly delivered as separate plugins. The executable's
+catalog declares which original plugin IDs have verified replacements; Lifecycle Lab is excluded.
 
-1. If you only have the original plugin, first install the executable using the command above.
+1. If you only have original plugins, first install the executable using the command above.
    The current installer runs `install`; it does not automatically choose migration.
    Open a new terminal after setup if needed for PATH changes.
-2. If `sdd-toolkit` is already available and supports migration, go directly to this command;
-   no separate `install` is required:
+2. If `sdd-toolkit` is already available, use `sdd-toolkit update` to obtain the current replacement
+   catalog, then run the command below. No separate `install` is required:
 
    ```text
    sdd-toolkit migrate
@@ -63,10 +64,19 @@ The original plugin is `lifecycle@reachcollective-sdd-toolkit`; the replacement 
 
 3. Restart the migrated agents. Use `sdd-toolkit update` for later releases.
 
-Migration installs and verifies the replacement before removing the old user-scoped Lifecycle.
-It preserves other plugins, credentials and project files. A failed replacement leaves the old
-plugin installed; project-scoped installations are reported for explicit project-specific handling.
+Migration installs and verifies the complete replacement catalog before removing eligible original
+user-scoped plugins. It preserves unknown plugins, credentials and project files. A failed replacement
+leaves original plugins installed; project-scoped installations require explicit project handling.
+The original marketplace is removed only when a complete inventory has no installed consumers.
 Use `sdd-toolkit migrate --dry-run` to preview the operation.
+
+The executable and managed plugins do not use the original toolkit or `.rcp`. Browser QA uses the
+independent harness and its configured API MCP for temporary accounts; follow that harness's current
+access instructions. Required general tools must resolve outside `.rcp/bin`. Migration does not copy
+old credentials, delete that directory recursively or remove independently owned tools.
+Work remains inside the existing workspace; RCLI owns its MCP setup. The harness reuses that access
+only when the workspace declares the `mcp` capability. Other workspaces do not require account
+provisioning. `status` and `doctor` report replaceable and retained original plugin registrations.
 
 Without `--agent`, maintenance reuses the agents selected during setup. Both are covered only when
 both were selected. To target an agent explicitly, use `sdd-toolkit migrate --agent codex` or
